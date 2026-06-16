@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  --bg-base: #F5EBE0;
+  --bg-elevated: #FAF3E7;
+  --bg-surface: #FFFFFF;
+  --bg-muted: #EFE3D3;
+
+  --text-primary: #2B1810;
+  --text-secondary: #4A3528;
+  --text-muted: #8B6F5A;
+
+  --accent-primary: #8B5A3C;
+  --accent-secondary: #A0522D;
+  --accent-tertiary: #6B4423;
+  --accent-success: #B07A4F;
+  --accent-foreground: #FFFFFF;
+
+  --border-subtle: rgba(43, 24, 16, 0.06);
+  --border-soft: rgba(43, 24, 16, 0.1);
+  --border-medium: rgba(43, 24, 16, 0.14);
+  --border-strong: rgba(139, 90, 60, 0.3);
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent-primary);
+  --primary-foreground: var(--accent-foreground);
+  --muted: var(--bg-muted);
+  --muted-foreground: var(--text-muted);
+  --destructive: #B91C1C;
+  --destructive-foreground: #ffffff;
+  --border: var(--border-soft);
+  --ring: rgba(139, 90, 60, 0.4);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --bg-base: #1A1410;
+  --bg-elevated: #211710;
+  --bg-surface: #2A1F17;
+  --bg-muted: #1F1610;
+
+  --text-primary: #F5EBE0;
+  --text-secondary: #D4C5B0;
+  --text-muted: #A89580;
+
+  --accent-primary: #D4A373;
+  --accent-secondary: #B07A4F;
+  --accent-tertiary: #E8C9A0;
+  --accent-success: #E0B589;
+  --accent-foreground: #1A1410;
+
+  --border-subtle: rgba(245, 235, 224, 0.06);
+  --border-soft: rgba(245, 235, 224, 0.1);
+  --border-medium: rgba(245, 235, 224, 0.14);
+  --border-strong: rgba(212, 163, 115, 0.3);
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent-primary);
+  --primary-foreground: var(--accent-foreground);
+  --muted: var(--bg-muted);
+  --muted-foreground: var(--text-muted);
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: var(--border-soft);
+  --ring: rgba(212, 163, 115, 0.4);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-bg-base: var(--bg-base);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-muted: var(--bg-muted);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  font-size: var(--font-size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 0; height: 0; }
+* { scrollbar-width: none; }
+
+.tnum { font-feature-settings: 'tnum'; font-variant-numeric: tabular-nums; }
+
+/* Checkerboard untuk preview transparan */
+.checkerboard {
+  background-image:
+    linear-gradient(45deg, rgba(43,24,16,0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(43,24,16,0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(43,24,16,0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(43,24,16,0.08) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.dark .checkerboard {
+  background-image:
+    linear-gradient(45deg, rgba(245,235,224,0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(245,235,224,0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(245,235,224,0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(245,235,224,0.08) 75%);
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fade-in 0.22s ease-out forwards; }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.pulse-soft { animation: pulse-soft 1.8s ease-in-out infinite; }
