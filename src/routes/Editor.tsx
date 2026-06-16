@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Check,
@@ -26,6 +26,81 @@ export default function EditorRoute() {
   const navigate = useNavigate()
   const isDark = useThemeStore((s) => s.isDark)
   const toggleTheme = useThemeStore((s) => s.toggle)
+
+  // States for Mobile Bottom Sheet
+  const [isMobile, setIsMobile] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [sheetHeight, setSheetHeight] = useState(window.innerHeight * 0.55)
+  const [startY, setStartY] = useState<number | null>(null)
+  const [startHeight, setStartHeight] = useState<number | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+
+  // Track if we are on mobile dynamically
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+      if (!mobile) {
+        setIsCollapsed(false)
+      }
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isMobile) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setStartY(e.clientY)
+    setStartHeight(isCollapsed ? 50 : sheetHeight)
+    setIsDragging(true)
+  }
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || startY === null || startHeight === null) return
+    const deltaY = e.clientY - startY
+    const newHeight = Math.max(50, Math.min(window.innerHeight * 0.85, startHeight - deltaY))
+    setSheetHeight(newHeight)
+    if (newHeight > 50 && isCollapsed) {
+      setIsCollapsed(false)
+    }
+  }
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || startY === null || startHeight === null) return
+    e.currentTarget.releasePointerCapture(e.pointerId)
+    setIsDragging(false)
+    
+    const deltaY = e.clientY - startY
+    setStartY(null)
+    setStartHeight(null)
+
+    // Treat tiny movements as tap/click to toggle
+    if (Math.abs(deltaY) < 5) {
+      if (isCollapsed) {
+        setIsCollapsed(false)
+        setSheetHeight(window.innerHeight * 0.55)
+      } else {
+        setIsCollapsed(true)
+        setSheetHeight(50)
+      }
+      return
+    }
+
+    // Snap to collapsed or expanded based on position
+    const collapsedThreshold = window.innerHeight * 0.2
+    if (sheetHeight < collapsedThreshold) {
+      setIsCollapsed(true)
+      setSheetHeight(50)
+    } else {
+      setIsCollapsed(false)
+      // If dragged height is too low/high, snap to defaults
+      if (sheetHeight < window.innerHeight * 0.3) {
+        setSheetHeight(window.innerHeight * 0.55)
+      }
+    }
+  }
 
   const sourceBlob = useEditorStore((s) => s.sourceBlob)
   const sourceUrl = useEditorStore((s) => s.sourceUrl)
@@ -284,13 +359,35 @@ export default function EditorRoute() {
 
         {/* Side panel */}
         <aside
-          className="border-t lg:border-t-0 lg:border-l p-4 lg:p-5 overflow-y-auto flex flex-col gap-4 lg:w-[20rem] lg:flex-shrink-0"
+          className="border-t lg:border-t-0 lg:border-l p-4 lg:p-5 overflow-y-auto flex flex-col lg:w-[20rem] lg:flex-shrink-0"
           style={{
             background: 'var(--bg-surface)',
             borderColor: 'var(--border-soft)',
+            height: isMobile ? (isCollapsed ? '50px' : `${sheetHeight}px`) : undefined,
+            transition: isDragging ? 'none' : 'height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            overflowY: isCollapsed ? 'hidden' : 'auto',
           }}
         >
-          <div className="flex flex-col gap-4">
+          {/* Mobile Drag Handle */}
+          <div
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            className="flex lg:hidden items-center justify-center py-3 -mt-4 -mx-4 mb-2 cursor-grab active:cursor-grabbing touch-none select-none"
+            style={{
+              borderBottom: isCollapsed ? 'none' : '1px solid var(--border-soft)',
+              background: 'var(--bg-surface)',
+            }}
+          >
+            <div className="w-12 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-600 transition-colors hover:bg-neutral-400" />
+          </div>
+
+          <div
+            className="flex flex-col gap-4"
+            style={{
+              display: isCollapsed ? 'none' : 'flex',
+            }}
+          >
             {/* Remove BG CTA */}
             {!cutoutBlob ? (
               <PrimaryBtn full onClick={handleRemoveBg} disabled={isProcessing}>

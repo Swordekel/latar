@@ -6,7 +6,6 @@ interface Props {
   viewMode: 'cutout' | 'before-after'
 }
 
-const MAX_HEIGHT = 'calc(100vh - 160px)'
 
 export function EditorCanvas({ viewMode }: Props) {
   const sourceUrl = useEditorStore((s) => s.sourceUrl)
@@ -45,7 +44,7 @@ export function EditorCanvas({ viewMode }: Props) {
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-8">
       <div
-        className="relative inline-block rounded-2xl overflow-hidden checkerboard"
+        className="relative inline-block rounded-2xl overflow-hidden checkerboard max-h-full max-w-full"
         style={{
           boxShadow: '0 20px 48px rgba(43, 24, 16, 0.18)',
         }}
@@ -58,7 +57,7 @@ export function EditorCanvas({ viewMode }: Props) {
           alt="preview"
           className="relative block max-w-full"
           style={{
-            maxHeight: MAX_HEIGHT,
+            maxHeight: '100%',
             filter: filterCss,
             willChange: 'filter',
           }}
@@ -124,7 +123,7 @@ function BeforeAfterView({
   return (
     <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-8">
       <div
-        className="relative inline-block rounded-2xl overflow-hidden checkerboard"
+        className="relative inline-block rounded-2xl overflow-hidden checkerboard max-h-full max-w-full"
         style={{
           boxShadow: '0 20px 48px rgba(43, 24, 16, 0.18)',
         }}
@@ -135,7 +134,7 @@ function BeforeAfterView({
           alt="before"
           className="relative block max-w-full"
           style={{
-            maxHeight: MAX_HEIGHT,
+            maxHeight: '100%',
             filter: filterCss,
           }}
           draggable={false}
