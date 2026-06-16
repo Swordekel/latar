@@ -136,6 +136,7 @@ function BeforeAfterView({
           style={{
             maxHeight: '100%',
             filter: filterCss,
+            clipPath: `inset(0 ${100 - pos}% 0 0)`,
           }}
           draggable={false}
         />
